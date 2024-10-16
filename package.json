@@ -2,14 +2,18 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Museum Backend Server using RestApi in nodejs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "node index.js"
+    "serve": "node index.js",
+    "dev": "node index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.1"
+    "express": "^4.21.1",
+    "mysql2": "^3.11.3",
+    "nodemon": "^3.1.7"
   }
 }
