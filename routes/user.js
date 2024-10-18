@@ -1,12 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const {User} = require("../models");
+const {UserRole} = require("../models");
 
 
 // get all
 router.get('/', async (req, res) => {
     try {
-        const user = await User.findAll();
+        const user = await User.findAll({
+            include: [{
+                model: UserRole,
+                as: 'userRole'
+            }]
+        });
+        // user.setRole(UserRole.findByPk(user.role));
         res.json(user);
     } catch (err) {
         console.error(err);
@@ -18,7 +25,12 @@ router.get('/', async (req, res) => {
 router.get('/:id ', async (req, res) => {
     try {
         const id = req.params.id;
-        const user = await User.findByPk(id);
+        const user = await User.findByPk(id,{
+            include: [{
+                model: UserRole,
+                as: 'userRole'
+            }]
+        });
         res.json(user);
     } catch (err) {
         console.error(err);

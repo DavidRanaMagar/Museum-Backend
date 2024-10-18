@@ -46,7 +46,8 @@ module.exports = (sequelize, DataTypes) => {
     User.associate = function (models) {
         User.belongsTo(models.UserRole, { // Adjust association to match foreign key
             foreignKey: 'role',
-            targetKey: 'roleCode'
+            targetKey: 'roleCode',
+            as: 'userRole'
         });
     };
 
