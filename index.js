@@ -4,7 +4,7 @@ const app = express();
 const db = require('./models');
 
 app.use(express.json());
-app.use('cors')
+app.use(cors());
 //url encoded 
 // app.use(express.urlencoded({ extended: true }));
 app.use("/address", require("./routes/address"));
@@ -32,6 +32,8 @@ app.use("/ticket", require("./routes/ticket"));
 app.use("/ticketStatus", require("./routes/ticketStatus"));
 app.use("/ticketType", require("./routes/ticketType"));
 app.use("/transaction", require("./routes/transaction"));
+app.use("/user", require("./routes/user"));
+app.use("/userRole", require("./routes/userRole"));
 
 
 db.sequelize.sync().then(() => {
