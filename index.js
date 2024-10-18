@@ -4,7 +4,7 @@ const app = express();
 const db = require('./models');
 
 app.use(express.json());
-app.use('cors')
+app.use(cors)
 //url encoded 
 // app.use(express.urlencoded({ extended: true }));
 app.use("/address", require("./routes/address"));
