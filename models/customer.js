@@ -36,17 +36,17 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         creditCardNumber: {
-        type: DataTypes.STRING(16), 
-        allowNull: false
-    },
-    expiryDate: {
-        type: DataTypes.DATEONLY,
-        allowNull: false
-    },
-    cvv: {
-        type: DataTypes.STRING(3), // Typically 3 digits
-        allowNull: false
-    },
+            type: DataTypes.STRING(16),
+            allowNull: false
+        },
+        expiryDate: {
+            type: DataTypes.DATEONLY,
+            allowNull: false
+        },
+        cvv: {
+            type: DataTypes.STRING(3), // Typically 3 digits
+            allowNull: false
+        },
         createdAt: {
             type: DataTypes.DATE,
             allowNull: true,
