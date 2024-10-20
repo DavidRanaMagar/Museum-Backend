@@ -1,0 +1,45 @@
+{
+  "development": {
+    "username": "database",
+    "password": "DB3380@UH",
+    "database": "museum",
+    "host": "3380-project.mysql.database.azure.com",
+    "port": 3306,
+    "dialect": "mysql",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": true
+      }
+    }
+  },
+  "test": {
+    "username": "database",
+    "password": "DB3380@UH",
+    "database": "museum",
+    "host": "3380-project.mysql.database.azure.com",
+    "port": 3306,
+    "dialect": "mysql",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": true
+      }
+    }
+  },
+  "production": {
+    "username": "database",
+    "password": "DB3380@UH",
+    "database": "museum",
+    "host": "3380-project.mysql.database.azure.com",
+    "port": 3306,
+    "dialect": "mysql",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": true
+      }
+    }
+  }
+}
+

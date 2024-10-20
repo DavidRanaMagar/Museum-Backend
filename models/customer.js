@@ -34,10 +34,9 @@ module.exports = (sequelize, DataTypes) => {
                 model: 'Sex', // Name of the referenced model
                 key: 'sexCode' // Key in the referenced model
             }
-        
         },
         creditCardNumber: {
-            type: DataTypes.STRING(16), 
+            type: DataTypes.STRING(16),
             allowNull: false
         },
         expiryDate: {

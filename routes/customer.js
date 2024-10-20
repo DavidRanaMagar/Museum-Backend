@@ -28,12 +28,64 @@ router.get('/:id ', async (req, res) => {
 
 // insert
 router.post('/', async (req, res) => {
+    const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        dob,
+        sex,
+        creditCardNumber,
+        expiryDate,
+        cvv,
+        streetAddress,
+        city,
+        state,
+        postalCode,
+        country
+    } = req.body;
+
     try {
-        const customer = await Customer.create(req.body);
-        res.json(customer);
+        // Check if address already exists
+        let address = await Address.findOne({
+            where: {
+                streetAddress: streetAddress,
+                city: city,
+                state: state,
+                postalCode: postalCode,
+                country: country
+            }
+        });
+
+        // If address doesn't exist, create it
+        if (!address) {
+            address = await Address.create({
+                streetAddress,
+                city,
+                state,
+                postalCode,
+                country
+            });
+        }
+
+        // Create customer with the found or created addressID
+        const customer = await Customer.create({
+            firstName,
+            lastName,
+            email,
+            phone,
+            dob,
+            sex,
+            creditCardNumber,
+            expiryDate,
+            cvv,
+            address: address.addressID // Use the found/created address ID
+        });
+
+        res.status(201).json(customer);
     } catch (err) {
         console.error(err);
-        res.status(500).json({message: 'An error occurred while creating an Customer'});
+        res.status(500).json({ message: 'An error occurred while creating a customer' });
     }
 });
 
