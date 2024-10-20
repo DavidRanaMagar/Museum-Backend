@@ -1,13 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const {Customer} = require("../models");
-const {Address} = require("../models");
+const {Customer, Sex, Address} = require("../models");
+const {NUMBER} = require("sequelize");
 
 
 // get all
 router.get('/', async (req, res) => {
     try {
-        const customer = await Customer.findAll();
+        const customer = await Customer.findAll({
+            include: [{
+                model: Address,
+                as: 'customerAddress',
+            }, {
+                model: Sex,
+                as: 'gender',
+            }]
+        });
         res.json(customer);
     } catch (err) {
         console.error(err);
@@ -16,10 +24,18 @@ router.get('/', async (req, res) => {
 });
 
 //get by ID
-router.get('/:id ', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const customer = await Customer.findByPk(id);
+        const customer = await Customer.findByPk(id, {
+            include: [{
+                model: Address,
+                as: 'customerAddress',
+            }, {
+                model: Sex,
+                as: 'gender',
+            }]
+        });
         res.json(customer);
     } catch (err) {
         console.error(err);
@@ -86,7 +102,7 @@ router.post('/', async (req, res) => {
         res.status(201).json(customer);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'An error occurred while creating a customer' });
+        res.status(500).json({message: 'An error occurred while creating a customer'});
     }
 });
 
