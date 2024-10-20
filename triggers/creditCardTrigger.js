@@ -62,7 +62,7 @@ cron.schedule('0 0 * * *', () => {
     // Query to select customers with expiring credit cards
     const query = `
         SELECT customerID, creditCardNumber, expiryDate, email 
-        FROM customer // Ensure this matches your actual table name
+        FROM customer 
         WHERE expiryDate BETWEEN CURDATE() AND CURDATE() + INTERVAL 30 DAY;
     `;
 

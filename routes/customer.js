@@ -55,22 +55,26 @@ router.post('/', async (req, res) => {
         creditCardNumber,
         expiryDate,
         cvv,
+        customerAddress
+    } = req.body;
+
+    const {
         streetAddress,
         city,
         state,
         postalCode,
         country
-    } = req.body;
+    } = customerAddress;
 
     try {
         // Check if address already exists
         let address = await Address.findOne({
             where: {
-                streetAddress: streetAddress,
-                city: city,
-                state: state,
-                postalCode: postalCode,
-                country: country
+                streetAddress: customerAddress.streetAddress,
+                city: customerAddress.city,
+                state: customerAddress.state,
+                postalCode: customerAddress.postalCode,
+                country: customerAddress.country
             }
         });
 
@@ -103,6 +107,79 @@ router.post('/', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({message: 'An error occurred while creating a customer'});
+    }
+});
+
+// update
+router.put('/:id', async (req, res) => {
+    const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        dob,
+        sex,
+        creditCardNumber,
+        expiryDate,
+        cvv,
+        customerAddress
+    } = req.body;
+
+    const {
+        streetAddress,
+        city,
+        state,
+        postalCode,
+        country
+    } = customerAddress;
+
+    try {
+        // Check if customer exists
+        const customer = await Customer.findByPk(req.params.id);
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found' });
+        }
+
+        // Check if address already exists
+        let address = await Address.findOne({
+            where: {
+                streetAddress,
+                city,
+                state,
+                postalCode,
+                country
+            }
+        });
+
+        // If address doesn't exist, create it
+        if (!address) {
+            address = await Address.create({
+                streetAddress,
+                city,
+                state,
+                postalCode,
+                country
+            });
+        }
+
+        // Update customer with the found or created addressID
+        await customer.update({
+            firstName,
+            lastName,
+            email,
+            phone,
+            dob,
+            sex,
+            creditCardNumber,
+            expiryDate,
+            cvv,
+            address: address.addressID // Use the found/created address ID
+        });
+
+        res.status(200).json(customer);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while updating the customer' });
     }
 });
 
