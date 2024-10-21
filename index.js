@@ -12,8 +12,10 @@ require('dotenv').config();
 app.use(express.json());
 app.use(cors());
 
-// Import the credit card trigger
-require('./triggers/creditCardTrigger');
+// Import the triggers
+require('./triggers/creditCardExpiryTrigger');
+require('./triggers/membershipExpiryTrigger');
+require('./triggers/upcomingEventsTrigger');
 
 //url encoded 
 // app.use(express.urlencoded({ extended: true }));

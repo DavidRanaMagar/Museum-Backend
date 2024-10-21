@@ -24,7 +24,7 @@ db.connect(err => {
     console.log('Connected to the database.');
 });
 
-console.log('Trigger script loaded.');
+console.log('creditCardExpiry Trigger has succesfully loaded.');
 
 // Configure the email transporter
 const transporter = nodemailer.createTransport({
@@ -43,7 +43,7 @@ const sendEmailNotification = (customer) => {
         from: process.env.EMAIL_USER, //COMPANY email
         to: email,
         subject: 'Credit Card Expiration Reminder',
-        text: `Dear Customer, your credit card ending in ${creditCardNumber.slice(-4)} is expiring on ${expiryDate}. Please update your payment information to avoid service interruptions.`
+        text: `Dear Customer, \n\n your credit card ending in ${creditCardNumber.slice(-4)} is unfortunately expiring on ${expiryDate}. Please proceed to update your payment information to avoid service interruptions.Have a Nice Day!\n\nBest regards,\nMuseum Fine Arts Houston`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -79,13 +79,11 @@ cron.schedule('0 0 * * *', () => {
     });
 });
 
-// Test customer object
+// USE THE FOLLOWING TO TEST
 //const testCustomer = {
-  //  email: 'test123@gmail.com', // Replace with your test email
-    //creditCardNumber: '1234567812345678',
-    //expiryDate: '2024-12-31' // Example expiry date
+//    email: 'test123@gmail.com', // Replace with your test email
+//    creditCardNumber: '1234567812345678',
+//    expiryDate: '2024-12-31' 
 //};
-
-// Send a test email notification
 //sendEmailNotification(testCustomer);
 
