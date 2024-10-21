@@ -6,9 +6,9 @@ require('dotenv').config();
 
 // Connecting MySQL DB
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,      
-    user: process.env.DB_USER,      
-    password: process.env.DB_PASSWORD, 
+    host: "3380-project.mysql.database.azure.com",
+    user: "database",
+    password: "DB3380@UH",
     database: "museum",
     ssl: {
         rejectUnauthorized: true, // or false if you want to allow self-signed certificates
@@ -62,7 +62,7 @@ cron.schedule('0 0 * * *', () => {
     // Query to select customers with expiring credit cards
     const query = `
         SELECT customerID, creditCardNumber, expiryDate, email 
-        FROM customer // Ensure this matches your actual table name
+        FROM customer 
         WHERE expiryDate BETWEEN CURDATE() AND CURDATE() + INTERVAL 30 DAY;
     `;
 
@@ -86,4 +86,3 @@ cron.schedule('0 0 * * *', () => {
 //    expiryDate: '2024-12-31' 
 //};
 //sendEmailNotification(testCustomer);
-

@@ -1,3 +1,4 @@
+
 'use strict';
 module.exports = (sequelize, DataTypes) => {
     const Customer = sequelize.define('Customer', {
@@ -34,10 +35,9 @@ module.exports = (sequelize, DataTypes) => {
                 model: 'Sex', // Name of the referenced model
                 key: 'sexCode' // Key in the referenced model
             }
-        
         },
         creditCardNumber: {
-            type: DataTypes.STRING(16), 
+            type: DataTypes.STRING(16),
             allowNull: false
         },
         expiryDate: {
@@ -84,10 +84,12 @@ module.exports = (sequelize, DataTypes) => {
         // associations can be defined here
         Customer.belongsTo(models.Sex, {
             foreignKey: 'sex',
+            targetKey: 'sexCode',
             as: 'gender'
         });
         Customer.belongsTo(models.Address, {
             foreignKey: 'address',
+            targetKey: 'addressID',
             as: 'customerAddress'
         });
     };

@@ -83,12 +83,12 @@ cron.schedule('0 0 * * *', () => {
 });
 
 // USE THE FOLLOWING TO TEST
-const testEvent = {
-    email: 'ff20gg22@gmail.com', // Replace with your test email
-    title: 'Impressionist Art Exhibit',
-    startDate: '2024-10-25', // Example future date
-    building: 'Main Museum Hall',
-    floor: '2nd Floor',
-    timeSlot: '10:00 AM - 12:00 PM' // Example time slot
-};
-sendEventNotification(testEvent);
+//const testEvent = {
+//    email: 'test123@gmail.com', // Replace with your test email
+//    title: 'Impressionist Art Exhibit',
+//    startDate: '2024-10-25', // Example future date
+//    building: 'Main Museum Hall',
+//    floor: '2nd Floor',
+//    timeSlot: '10:00 AM - 12:00 PM' // Example time slot
+//};
+//sendEventNotification(testEvent);
