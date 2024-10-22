@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {Customer, Sex, Address} = require("../models");
+const {Customer, Sex, Address, UserRole} = require("../models");
 const {NUMBER} = require("sequelize");
 
 
@@ -182,6 +182,7 @@ router.put('/:id', async (req, res) => {
         res.status(500).json({ message: 'An error occurred while updating the customer' });
     }
 });
+
 
 //delete with id
 router.delete('/:id', async (req, res) => {

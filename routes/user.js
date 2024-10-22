@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {User} = require("../models");
-const {UserRole} = require("../models");
+const {User, UserRole} = require("../models");
 
 
 // get all
@@ -35,6 +34,33 @@ router.get('/:id ', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({message: 'An error occurred while fetching an User'});
+    }
+});
+
+// get with username/password
+router.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const user = await User.findOne({
+            where: { username, password },
+            include: [{
+                model: UserRole,
+                as: 'userRole',  // Use the alias from the association
+            }]
+        });
+
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials.' });
+        }
+
+        res.json({
+            userId: user.userID,
+            role: user.userRole.role
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while logging in.' });
     }
 });
 
