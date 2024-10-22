@@ -17,6 +17,10 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.DATE,
             allowNull: false,
         },
+        timeSlot: {
+            type: DataTypes.TIME,
+            allowNull: true
+        },
         endDate: {
             type: DataTypes.DATE,
             allowNull: false,
