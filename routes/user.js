@@ -64,6 +64,26 @@ router.post('/login', async (req, res) => {
     }
 });
 
+//get user by username only
+router.post('/register', async (req, res) => {
+    const { username } = req.body;
+
+    try {
+        const user = await User.findOne({
+            where: { username }
+        });
+
+        if (!user) {
+            return res.json({ userExists: 'false' });
+        }
+
+        res.json({ userExists: 'true' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while checking if user is already exists.' });
+    }
+});
+
 // insert
 router.post('/', async (req, res) => {
     try {

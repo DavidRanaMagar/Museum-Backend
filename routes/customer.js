@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {Customer, Sex, Address, UserRole} = require("../models");
+const {Customer, Sex, Address, User} = require("../models");
 const {NUMBER} = require("sequelize");
 
 
@@ -55,7 +55,8 @@ router.post('/', async (req, res) => {
         creditCardNumber,
         expiryDate,
         cvv,
-        customerAddress
+        customerAddress,
+        user
     } = req.body;
 
     const {
@@ -65,6 +66,14 @@ router.post('/', async (req, res) => {
         postalCode,
         country
     } = customerAddress;
+
+    const {
+        username,
+        password,
+        role,
+        createdBy,
+        updatedBy
+    } = user;
 
     try {
         // Check if address already exists
@@ -89,6 +98,14 @@ router.post('/', async (req, res) => {
             });
         }
 
+        let user = await User.create({
+            username,
+            password,
+            role,
+            createdBy,
+            updatedBy
+        });
+
         // Create customer with the found or created addressID
         const customer = await Customer.create({
             firstName,
@@ -100,7 +117,8 @@ router.post('/', async (req, res) => {
             creditCardNumber,
             expiryDate,
             cvv,
-            address: address.addressID // Use the found/created address ID
+            address: address.addressID, // Use the found/created address ID
+            user: user.userID
         });
 
         res.status(201).json(customer);
