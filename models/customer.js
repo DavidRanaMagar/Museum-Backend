@@ -1,4 +1,3 @@
-
 'use strict';
 module.exports = (sequelize, DataTypes) => {
     const Customer = sequelize.define('Customer', {
@@ -48,6 +47,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(3), // Typically 3 digits
             allowNull: false
         },
+        userID: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references:{
+                model: 'User',
+                key: 'userID'
+            }
+        },
         createdAt: {
             type: DataTypes.DATE,
             allowNull: true,
@@ -84,13 +91,15 @@ module.exports = (sequelize, DataTypes) => {
         // associations can be defined here
         Customer.belongsTo(models.Sex, {
             foreignKey: 'sex',
-            targetKey: 'sexCode',
             as: 'gender'
         });
         Customer.belongsTo(models.Address, {
             foreignKey: 'address',
-            targetKey: 'addressID',
             as: 'customerAddress'
+        });
+        Customer.belongsTo(models.User, {
+            foreignKey: 'userID',
+            as: 'user'
         });
     };
 
