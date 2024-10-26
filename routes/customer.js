@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {Customer, Sex, Address, User, UserRole} = require("../models");
+const {Customer, Sex, Address, User} = require("../models");
 const {NUMBER} = require("sequelize");
 
 
@@ -96,29 +96,19 @@ router.post('/', async (req, res) => {
     } = user;
 
     try {
-        // Check if address already exists
-        let address = await Address.findOne({
-            where: {
-                streetAddress: customerAddress.streetAddress,
-                city: customerAddress.city,
-                state: customerAddress.state,
-                postalCode: customerAddress.postalCode,
-                country: customerAddress.country
-            }
-        });
 
-        // If address doesn't exist, create it
-        if (!address) {
-            address = await Address.create({
+        const [address] = await Address.findOrCreate({  // Use findOrCreate to check if the address exists or create a new one
+            where: {
                 streetAddress,
                 city,
                 state,
                 postalCode,
                 country
-            });
-        }
+            },
+            defaults: { streetAddress, city, state, postalCode, country }
+        });
 
-        let user = await User.create({
+        const newUser = await User.create({
             username,
             password,
             role,
@@ -126,19 +116,20 @@ router.post('/', async (req, res) => {
             updatedBy
         });
 
-        // Create customer with the found or created addressID
         const customer = await Customer.create({
             firstName,
             lastName,
             email,
             phone,
             dob,
-            sex,
+            sex,  // This will use the foreign key for 'Sex'
             creditCardNumber,
             expiryDate,
             cvv,
-            address: address.addressID, // Use the found/created address ID
-            user: user.userID
+            updatedBy: newUser.updatedBy,
+            createdBy: newUser.createdBy,
+            addressID: address.addressID,  // Use the addressID from the created/found address
+            userID: newUser.userID  // Use the userID from the created user
         });
 
         res.status(201).json(customer);

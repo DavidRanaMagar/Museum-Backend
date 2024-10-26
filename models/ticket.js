@@ -12,15 +12,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         purchaseDate: {
             type: DataTypes.DATEONLY,
-            allowNull: true
+            allowNull: false
         },
         eventDate: {
             type: DataTypes.DATEONLY,
-            allowNull: true
+            allowNull: false
         },
         timeSlot: {
             type: DataTypes.TIME,
-            allowNull: true
+            allowNull: false
         },
         ticketStatus: {
             type: DataTypes.TINYINT,
@@ -37,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         createdBy: {
             type: DataTypes.STRING(25),
-            allowNull: true
+            defaultValue: 'online user',
+            allowNull: false
         },
         updatedAt: {
             type: DataTypes.DATE,
@@ -47,7 +48,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         updatedBy: {
             type: DataTypes.STRING(25),
-            allowNull: true
+            defaultValue: 'online user',
+            allowNull: false
         }
     }, {
         tableName: 'ticket',
