@@ -29,14 +29,6 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        startDate: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-        endDate: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
         imageUrl: {
             type: DataTypes.STRING,
             allowNull: false,

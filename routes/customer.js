@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {Customer, Sex, Address, User} = require("../models");
+const {Customer, Sex, Address, User, UserRole} = require("../models");
 const {NUMBER} = require("sequelize");
 
 
@@ -42,6 +42,26 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({message: 'An error occurred while fetching an Customer'});
     }
 });
+
+//get by userID
+router.get('/user/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const customer = await Customer.findOne({
+            where: { userID: id}
+        });
+
+        if (!customer) {
+            return res.status(401).json({ message: 'No customer attached to this user.' });
+        }
+
+        res.json(customer);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'An error occurred while fetching an Customer'});
+    }
+});
+
 
 // insert
 router.post('/', async (req, res) => {

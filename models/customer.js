@@ -74,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(25),
             allowNull: true
         },
-        address: {
+        addressID: {
             type: DataTypes.INTEGER,
             allowNull: true,
             references: {
@@ -94,7 +94,7 @@ module.exports = (sequelize, DataTypes) => {
             as: 'gender'
         });
         Customer.belongsTo(models.Address, {
-            foreignKey: 'address',
+            foreignKey: 'addressID',
             as: 'customerAddress'
         });
         Customer.belongsTo(models.User, {

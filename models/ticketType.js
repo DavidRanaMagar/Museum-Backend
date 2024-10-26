@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(20),
             allowNull: false
         },
+        ticketPrice: {
+            type: DataTypes.FLOAT,
+            allowNull: false
+        },
         createdAt: {
             type: DataTypes.DATE,
             allowNull: true,

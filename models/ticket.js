@@ -10,10 +10,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TINYINT,
             allowNull: false
         },
-        price: {
-            type: DataTypes.FLOAT,
-            allowNull: false
-        },
         purchaseDate: {
             type: DataTypes.DATEONLY,
             allowNull: true
@@ -28,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         ticketStatus: {
             type: DataTypes.TINYINT,
+            allowNull: false
+        },
+        customerID: {
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         createdAt: {
@@ -63,6 +63,10 @@ module.exports = (sequelize, DataTypes) => {
         Ticket.belongsTo(models.TicketStatus, {
             foreignKey: 'ticketStatus',
             as: 'ticketStatusDetails'
+        });
+        Ticket.belongsTo(models.Customer, {
+            foreignKey: 'customerID',
+            as: 'customer'
         });
     };
 
