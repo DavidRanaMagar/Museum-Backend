@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATEONLY,
             allowNull: false
         },
-        jobTittle: {
+        jobTitle: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
@@ -79,6 +79,14 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'addressID' // Key in the referenced model
             }
         },
+        userID: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references:{
+                model: 'User',
+                key: 'userID'
+            }
+        },
         gender: {
             type: DataTypes.TINYINT,
             allowNull: true,
@@ -95,7 +103,7 @@ module.exports = (sequelize, DataTypes) => {
     Employee.associate = function (models) {
         // associations can be defined here
         Employee.belongsTo(models.JobTitle, {
-            foreignKey: 'jobTittle',
+            foreignKey: 'jobTitle',
             as: 'job'
         });
         Employee.belongsTo(models.Department, {
@@ -104,11 +112,15 @@ module.exports = (sequelize, DataTypes) => {
         });
         Employee.belongsTo(models.Address, {
             foreignKey: 'address',
-            as: 'empAddress'
+            as: 'employeeAddress'
         });
         Employee.belongsTo(models.Sex, {
             foreignKey: 'gender',
-            as: 'empGender'
+            as: 'employeeGender'
+        });
+        Employee.belongsTo(models.User, {
+            foreignKey: 'userID',
+            as: 'employeeUser'
         });
     };
 

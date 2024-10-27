@@ -1,16 +1,18 @@
-module.exports = function (sequelize, DataTypes) {
+'use strict';
+module.exports = (sequelize, DataTypes) => {
     const Exhibition = sequelize.define('Exhibition', {
         exhibitionId: {
             type: DataTypes.INTEGER,
-            primaryKey: true,
             autoIncrement: true,
+            primaryKey: true,
+            allowNull: false,
         },
         title: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false,
         },
         artist: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false,
         },
         startDate: {
@@ -23,36 +25,37 @@ module.exports = function (sequelize, DataTypes) {
         },
         timeSlot: {
             type: DataTypes.TIME,
-            allowNull: true
+            allowNull: true, // Optional
         },
         locationId: {
             type: DataTypes.INTEGER,
             allowNull: false,
-        },
-        startDate: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-        endDate: {
-            type: DataTypes.DATE,
-            allowNull: false,
+            references: {
+                model: 'Location', // Reference to the Location model
+                key: 'locationId',
+            },
         },
         imageUrl: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false,
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+        },
+    }, {
+        tableName: 'exhibition',
+        timestamps: true,
     });
 
-    // Exhibition.associate = (models) => {
-    //   Exhibition.belongsTo(models.User, {
-    //     foreignKey: 'userId',
-    //     onDelete: 'CASCADE',
-    //   });
-    //   Exhibition.belongsTo(models.Location, {
-    //     foreignKey: 'locationId',
-    //     onDelete: 'CASCADE',
-    //   });
-    // };
-
+    Exhibition.associate = function (models) {
+        Exhibition.belongsTo(models.Location, {foreignKey: 'locationId'});
+    };
     return Exhibition;
-}
+};

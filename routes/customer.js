@@ -117,8 +117,8 @@ router.post('/', async (req, res) => {
             creditCardNumber,
             expiryDate,
             cvv,
-            address: address.addressID, // Use the found/created address ID
-            user: user.userID
+            addressID: address.addressID, // Use the found/created address ID
+            userID: user.userID
         });
 
         res.status(201).json(customer);
@@ -191,7 +191,7 @@ router.put('/:id', async (req, res) => {
             creditCardNumber,
             expiryDate,
             cvv,
-            address: address.addressID // Use the found/created address ID
+            addressID: address.addressID // Use the found/created address ID
         });
 
         res.status(200).json(customer);
