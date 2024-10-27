@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {Employee, Sex, Address, Department, JobTitle, User} = require("../models");
+const { Op } = require('sequelize');
 
 
 // get all
@@ -26,11 +27,61 @@ router.get('/', async (req, res) => {
             }]
         }
         );
-        console.log("Employees fetched:", employee);
         res.json(employee);
     } catch (err) {
         console.error(err);
         res.status(500).json({message: 'An error occurred while fetching Employee'});
+    }
+});
+
+// Search employees based on query parameters
+router.get('/search', async (req, res) => {
+    try {
+        const { firstName, lastName, email, dateOfBirth } = req.query;
+        const whereConditions = {};
+
+        if (firstName) {
+            whereConditions.firstName = {
+                [Op.like]: `%${firstName}%`,
+            };
+        }
+
+        if (lastName) {
+            whereConditions.lastName = {
+                [Op.like]: `%${lastName}%`,
+            };
+        }
+
+        if (email) {
+            whereConditions.email = {
+                [Op.like]: `%${email}%`,
+            };
+        }
+
+        if (dateOfBirth) {
+            whereConditions.dateOfBirth = {
+                [Op.eq]: dateOfBirth,  // Use Op.eq for an exact match
+            };
+        }
+
+        console.log('Where Conditions:', whereConditions);
+
+        const employees = await Employee.findAll({
+            where: whereConditions,
+            include: [
+                { model: Address, as: 'employeeAddress' },
+                { model: Sex, as: 'employeeGender' },
+                { model: Department, as: 'dept' },
+                { model: JobTitle, as: 'job' },
+                { model: User, as: 'employeeUser' },
+            ],
+        });
+
+        console.log('Employees Found:', employees);
+        res.json(employees);
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).json({ message: 'An error occurred while searching for employees.' });
     }
 });
 

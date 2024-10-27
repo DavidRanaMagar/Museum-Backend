@@ -4,18 +4,20 @@ module.exports = (sequelize, DataTypes) => {
         employeeID: {
             type: DataTypes.INTEGER,
             allowNull: false,
+            primaryKey: true,
             references: {
                 model: 'Employee', // Name of the referenced model
                 key: 'employeeID' // Key in the referenced model
             }
         },
+        workDate: {
+            type: DataTypes.DATEONLY,
+            allowNull: false,
+            primaryKey: true,
+        },
         hoursWorked: {
             type: DataTypes.FLOAT,
             allowNull: true
-        },
-        workDate: {
-            type: DataTypes.DATEONLY,
-            allowNull: false
         },
         createdAt: {
             type: DataTypes.DATE,

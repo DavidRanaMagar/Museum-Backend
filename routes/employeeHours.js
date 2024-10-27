@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {EmployeeHours} = require("../models");
+const {EmployeeHours, Employee} = require("../models");
+const { Op } = require('sequelize');
 
 
 // get all
@@ -14,11 +15,48 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Search employees based on query parameters
+router.get('/search', async (req, res) => {
+    const { employeeID, startDate, endDate } = req.query;
+
+    if (!employeeID || !startDate || !endDate) {
+        return res.status(400).json({ message: 'employeeID, startDate, and endDate are required' });
+    }
+
+    try {
+        const employeeHours = await EmployeeHours.findAll({
+            where: {
+                employeeID: employeeID,
+                workDate: {
+                    [Op.between]: [new Date(startDate), new Date(endDate)]
+                }
+            },
+            include: [{
+                model: Employee,
+                as: 'employee'
+            }]
+        });
+
+        // Return the found records
+        res.json(employeeHours);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while fetching EmployeeHours' });
+    }
+});
+
+
 //get by ID
 router.get('/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const employeeHours = await EmployeeHours.findByPk(id);
+        const employeeHours = await EmployeeHours.findAll({
+            where: { employeeID: id },
+            include: [{
+                model: Employee,
+                as: 'employee',
+            }]
+        });
         res.json(employeeHours);
     } catch (err) {
         console.error(err);
