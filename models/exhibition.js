@@ -1,18 +1,16 @@
-'use strict';
-module.exports = (sequelize, DataTypes) => {
+module.exports = function (sequelize, DataTypes) {
     const Exhibition = sequelize.define('Exhibition', {
         exhibitionId: {
             type: DataTypes.INTEGER,
-            autoIncrement: true,
             primaryKey: true,
-            allowNull: false,
+            autoIncrement: true,
         },
         title: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.STRING,
             allowNull: false,
         },
         artist: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.STRING,
             allowNull: false,
         },
         startDate: {
@@ -25,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         timeSlot: {
             type: DataTypes.TIME,
-            allowNull: true, // Optional
+            allowNull: true
         },
         locationId: {
             type: DataTypes.INTEGER,

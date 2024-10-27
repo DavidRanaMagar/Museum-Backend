@@ -34,14 +34,14 @@ module.exports = (sequelize, DataTypes) => {
 
     Address.associate = function (models) {
         // associations can be defined here
-        // Address.hasMany(models.Customer, {
-        //     foreignKey: 'address',
-        //     as: 'customers'
-        // });
-        // Address.hasMany(models.Employee, {
-        //     foreignKey: 'address',
-        //     as: 'employees'
-        // });
+        Address.hasMany(models.Customer, {
+            foreignKey: 'addressID',
+            as: 'customers'
+        });
+        Address.hasMany(models.Employee, {
+            foreignKey: 'address',
+            as: 'employees'
+        });
         // Add other associations if necessary
     };
 

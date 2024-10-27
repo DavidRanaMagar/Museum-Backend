@@ -28,8 +28,26 @@ router.get('/:id', async (req, res) => {
 
 // insert
 router.post('/', async (req, res) => {
+    const {
+        ticketType,
+        purchaseDate,
+        eventDate,
+        timeSlot,
+        ticketStatus,
+        customerID,
+    } = req.body;
+
     try {
-        const ticket = await Ticket.create(req.body);
+        const ticket = await Ticket.create({
+            ticketType,
+            purchaseDate,
+            eventDate,
+            timeSlot,
+            ticketStatus,
+            customerID,
+            updatedBy: 'online user',
+            createdBy: 'online user'
+        });
         res.json(ticket);
     } catch (err) {
         console.error(err);

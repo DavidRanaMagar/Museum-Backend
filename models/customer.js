@@ -99,7 +99,6 @@ module.exports = (sequelize, DataTypes) => {
         });
         Customer.belongsTo(models.User, {
             foreignKey: 'userID',
-            as: 'user'
         });
     };
 
