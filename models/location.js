@@ -1,6 +1,7 @@
+'use strict';
 module.exports = (sequelize, DataTypes) => {
     const Location = sequelize.define('Location', {
-        locationId: {
+        locationID: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
@@ -16,15 +17,31 @@ module.exports = (sequelize, DataTypes) => {
         section: {
             type: DataTypes.STRING,
             allowNull: false,
+            field: 'section'
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: DataTypes.NOW
+        },
+        createdBy: {
+            type: DataTypes.STRING(25),
+            allowNull: true
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: DataTypes.NOW,
+            onUpdate: DataTypes.NOW
+        },
+        updatedBy: {
+            type: DataTypes.STRING(25),
+            allowNull: true
+        },
+    },
+    {
+        tableName: 'location',
+        timestamps: true,
     });
-
-    // Location.associate = (models) => {
-    //   Location.belongsTo(models.User, {
-    //     foreignKey: 'userId',
-    //     onDelete: 'CASCADE',
-    //   });
-    // };
-
     return Location;
 }
