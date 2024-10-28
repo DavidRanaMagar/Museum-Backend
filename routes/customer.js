@@ -139,6 +139,64 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.post('/naUser', async (req, res) => {
+    const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        dob,
+        sex,
+        creditCardNumber,
+        expiryDate,
+        cvv,
+        customerAddress,
+        user
+    } = req.body;
+
+    const {
+        streetAddress,
+        city,
+        state,
+        postalCode,
+        country
+    } = customerAddress;
+
+    try {
+
+        const [address] = await Address.findOrCreate({  // Use findOrCreate to check if the address exists or create a new one
+            where: {
+                streetAddress,
+                city,
+                state,
+                postalCode,
+                country
+            },
+            defaults: { streetAddress, city, state, postalCode, country }
+        });
+
+        const customer = await Customer.create({
+            firstName,
+            lastName,
+            email,
+            phone,
+            dob,
+            sex,  // This will use the foreign key for 'Sex'
+            creditCardNumber,
+            expiryDate,
+            cvv,
+            updatedBy: 'admin',
+            createdBy: 'admin',
+            addressID: address.addressID,  // Use the addressID from the created/found address
+        });
+
+        res.status(201).json(customer);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'An error occurred while creating a customer'});
+    }
+});
+
 // update
 router.put('/:id', async (req, res) => {
     const {
