@@ -189,6 +189,66 @@ router.post('/', async (req, res) => {
     }
 });
 
+// insert
+router.post('/naUser', async (req, res) => {
+    const {
+        firstName,
+        lastName,
+        dateOfBirth,
+        hireDate,
+        jobTitle,
+        salary,
+        phoneNumber,
+        email,
+        department,
+        gender,
+        employeeAddress,
+        employeeUser
+    } = req.body;
+
+    const {
+        streetAddress,
+        city,
+        state,
+        postalCode,
+        country
+    } = employeeAddress;
+
+    try {
+        const [address] = await Address.findOrCreate({  // Use findOrCreate to check if the address exists or create a new one
+            where: {
+                streetAddress,
+                city,
+                state,
+                postalCode,
+                country
+            },
+            defaults: { streetAddress, city, state, postalCode, country }
+        });
+
+        const employee = await Employee.create({
+            firstName,
+            lastName,
+            dateOfBirth,
+            hireDate,
+            jobTitle,
+            salary,
+            phoneNumber,
+            email,
+            department,
+            gender,
+            updatedBy: 'admin',
+            createdBy: 'admin'.createdBy,
+            address: address.addressID,  // Use the addressID from the created/found address
+        });
+
+        res.status(201).json(employee);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'An error occurred while creating a employee'});
+    }
+});
+
 router.put('/:id', async (req, res) => {
     const {
         firstName,
