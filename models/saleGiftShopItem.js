@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
         saleID: {
             type: DataTypes.INTEGER,
             allowNull: false,
+            primaryKey: true,
             references: {
                 model: 'Sale', // Name of the referenced model
                 key: 'saleID'  // Key in the referenced model
@@ -12,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         giftShopItemID: {
             type: DataTypes.INTEGER,
             allowNull: false,
+            primaryKey: true,
             references: {
                 model: 'GiftShopItem', // Name of the referenced model
                 key: 'giftShopItemID'  // Key in the referenced model

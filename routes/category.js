@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const Category = require('../models');
+const {CCategory} = require('../models');
 
 
 // get all
 router.get('/', async (req, res) => {
     try {
-        const category = await Category.findAll();
+        const category = await CCategory.findAll();
         res.status(200).json(category);
     } catch (err) {
         console.error(err);
@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 //get by ID
 router.get('/:id', async (req, res) => {
     try {
-        const category = await Category.findByPk(req.params.id);
+        const category = await CCategory.findByPk(req.params.id);
         res.status(200).json(category);
     } catch (err) {
         console.error(err);
@@ -29,7 +29,7 @@ router.get('/:id', async (req, res) => {
 // insert
 router.post('/', async (req, res) => {
     try {
-        const category = await Category.create(req.body);
+        const category = await CCategory.create(req.body);
         res.status(200).json(category);
     } catch (err) {
         console.error(err);
@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id; // Get the id from the route parameters
-        const category = await Category.findByPk(id);
+        const category = await CCategory.findByPk(id);
         if (!category) {
             // If the category doesn't exist, return a 404 response
             return res.status(404).json({message: 'Category not found'});

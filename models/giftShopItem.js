@@ -78,7 +78,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'Category', // Assumes the category model is defined with this name
+                model: 'CCategory', // Assumes the category model is defined with this name
                 key: 'categoryID'
             }
         }
@@ -89,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
 
     GiftShopItem.associate = function (models) {
         // Foreign key association with Category
-        GiftShopItem.belongsTo(models.Category, {
+        GiftShopItem.belongsTo(models.CCategory, {
             foreignKey: 'categoryID',
             as: 'category'
         });

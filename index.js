@@ -52,6 +52,7 @@ app.use("/user", require("./routes/user"));
 app.use("/userRole", require("./routes/userRole"));
 app.use("/saleTicket", require("./routes/saleTicket"));
 app.use("/saleTransaction", require("./routes/saleTransaction"));
+app.use("/saleGiftShopItem", require("./routes/saleGiftShopItem"));
 
 
 db.sequelize.sync().then(() => {

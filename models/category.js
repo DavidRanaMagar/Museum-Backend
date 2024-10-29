@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    const Category = sequelize.define('Category', {
+    const CCategory = sequelize.define('CCategory', {
         categoryID: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -35,10 +35,5 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
-    Category.associate = function (models) {
-        // Define associations here
-        // Example: Category.hasMany(models.Product, { foreignKey: 'categoryID', as: 'products' });
-    };
-
-    return Category;
+    return CCategory;
 };
