@@ -3,22 +3,12 @@ module.exports = (sequelize, DataTypes) => {
     const ArtifactExhibition = sequelize.define('ArtifactExhibition', {
         exhibitionID: {
             type: DataTypes.INTEGER,
+            primaryKey: true,
             allowNull: false
         },
         artifactID: {
             type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        displayStartDate: {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
-        displayEndDate: {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
-        locationID: {
-            type: DataTypes.INTEGER,
+            primaryKey: true,
             allowNull: false
         },
         createdAt: {

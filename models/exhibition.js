@@ -1,6 +1,6 @@
 module.exports = function (sequelize, DataTypes) {
     const Exhibition = sequelize.define('Exhibition', {
-        exhibitionId: {
+        exhibitionID: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
@@ -25,35 +25,40 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.TIME,
             allowNull: true
         },
-        locationId: {
+        locationID: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: 'Location', // Reference to the Location model
-                key: 'locationId',
+                key: 'locationID',
             },
-        },
-        imageUrl: {
-            type: DataTypes.STRING(255),
-            allowNull: false,
         },
         createdAt: {
             type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
+            allowNull: true,
+            defaultValue: DataTypes.NOW
+        },
+        createdBy: {
+            type: DataTypes.STRING(25),
+            allowNull: true
         },
         updatedAt: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
+            onUpdate: DataTypes.NOW
         },
+        updatedBy: {
+            type: DataTypes.STRING(25),
+            allowNull: true
+        }
     }, {
         tableName: 'exhibition',
         timestamps: true,
     });
 
     Exhibition.associate = function (models) {
-        Exhibition.belongsTo(models.Location, {foreignKey: 'locationId'});
+        Exhibition.belongsTo(models.Location, {foreignKey: 'locationID'});
     };
     return Exhibition;
 };
