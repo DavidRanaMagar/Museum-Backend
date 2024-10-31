@@ -32,6 +32,7 @@ router.post('/dateRange', async (req, res) => {
 
     try {
         const donation = await sequelize.query(
+            //finds donations within a date range
             `
             SELECT * 
             FROM Donation AS d

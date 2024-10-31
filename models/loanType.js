@@ -36,8 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     LoanType.associate = function (models) {
-        // associations can be defined here
-        // If there are associations with other models, add them here
+
     };
 
     return LoanType;

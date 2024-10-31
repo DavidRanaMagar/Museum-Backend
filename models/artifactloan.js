@@ -3,10 +3,12 @@ module.exports = (sequelize, DataTypes) => {
     const ArtifactLoan = sequelize.define('ArtifactLoan', {
         artifactID: {
             type: DataTypes.INTEGER,
+            primaryKey: true,
             allowNull: false
         },
         loanID: {
             type: DataTypes.INTEGER,
+            primaryKey: true,
             allowNull: false
         },
         createdAt: {

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'LoanType', // This should match the name of the LoanType model
+                model: 'LoanType',
                 key: 'loanTypeID'
             }
         },
@@ -60,7 +60,6 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'loanTypeID',
             as: 'loanType'
         });
-        // Add other associations if necessary
     };
 
     return Loan;

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { sequelize, Artifact } = require('../models'); // Adjust the path to your models
-const { Op, literal } = require('sequelize');  // Import Op for query operators
+const {  Artifact, sequelize } = require('../models'); // Adjust the path to your models
+const { QueryTypes } = require('sequelize');  // Import Op for query operators
 
 
 // get all
@@ -34,20 +34,27 @@ router.post('/available', async (req, res) => {
     endDate = isValidDate(endDate) ? endDate : '9999-12-31';
 
     try {
-        const artifacts = await Artifact.findAll({
-            where: {
-                artifactID: {
-                    [Op.notIn]: literal(`(
-                        SELECT artifactID FROM artifact_exhibition ae
-                        JOIN exhibition e ON ae.exhibitionID = e.exhibitionId
-                        WHERE (
-                            (e.startDate < :endDate AND e.endDate > :startDate)
-                        )
-                    )`)
-                }
-            },
-            replacements: { startDate, endDate }
-        });
+        const artifacts = await sequelize.query(
+            //finds artifacts that aren't loaned and aren't in exhibition
+            `
+            SELECT * 
+            FROM artifact AS a
+            WHERE a.artifactID NOT IN (
+                SELECT artifactID 
+                FROM artifact_exhibition AS ae JOIN exhibition AS e ON ae.exhibitionID = e.exhibitionID
+                WHERE e.startDate <= :endDate AND e.endDate >= :startDate
+            )
+            AND a.artifactID NOT IN (
+                SELECT artifactID
+                FROM artifact_loan AS al JOIN loan AS l ON al.loanID = l.loanID
+                WHERE l.loanStartDate <= :endDate AND l.loanEndDate >= :startDate
+            )
+            `,
+            {
+                replacements: { startDate, endDate },
+                type: QueryTypes.SELECT
+            }
+        );
 
         res.json(artifacts);
     } catch (err) {
