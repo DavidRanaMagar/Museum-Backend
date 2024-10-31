@@ -59,11 +59,11 @@ module.exports = (sequelize, DataTypes) => {
     Donation.associate = (models) => {
         Donation.belongsTo(models.Customer, {
             foreignKey: 'customerID',
-            as: 'customerDetails'
+            as: 'customer'
         });
         Donation.belongsTo(models.Transaction, {
             foreignKey: 'transactionID',
-            as: 'transactionDetails'
+            as: 'transaction'
         });
     };
 
