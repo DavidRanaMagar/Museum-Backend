@@ -101,22 +101,17 @@ router.get('/customer/:customerID', async (req, res) => {
         }
 
         // Format the ticket data to include relevant information (such as status, type, price)
-        const formattedTickets = tickets.map(ticket => {
-            return {
-                ticketID: ticket.ticketID,
-                ticketType: ticket.TicketType.ticketType,
-                ticketPrice: ticket.TicketType.ticketPrice,
-                ticketStatus: ticket.TicketStatus.ticketStatus,
-                purchaseDate: ticket.purchaseDate,
-                eventDate: ticket.eventDate,
-                timeSlot: ticket.timeSlot,
-                saleDetails: ticket.SaleTickets.map(saleTicket => ({
-                    saleID: saleTicket.saleID,
-                    totalPrice: saleTicket.Sale.totalPrice,
-                    saleDate: saleTicket.Sale.createdAt,
-                })),
-            };
-        });
+        const formattedTickets = tickets.map(ticket => ({
+    ticketID: ticket.ticketID,
+    ticketType: ticket.TicketType.ticketType,
+    ticketPrice: ticket.TicketType.ticketPrice,
+    ticketStatus: ticket.TicketStatus.ticketStatus,  // This is your ticket status field
+    purchaseDate: ticket.purchaseDate,
+    eventDate: ticket.eventDate,
+    timeSlot: ticket.timeSlot,
+    transactionAmount: ticket.SaleTickets.length > 0 ? ticket.SaleTickets[0].Sale.totalPrice : 0,
+}));
+
 
         res.json(formattedTickets);
     } catch (err) {
