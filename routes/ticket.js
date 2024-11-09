@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { Ticket, SaleTicket, Sale, TicketStatus, TicketType } = require('../models');
+const { Ticket, SaleTicket, Sale, TicketStatus, TicketType, sequelize} = require('../models');
+const {QueryTypes} = require("sequelize");
 
 // Get all tickets
 router.get('/', async (req, res) => {
@@ -117,6 +118,238 @@ router.get('/customer/:customerID', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'An error occurred while fetching customer tickets' });
+    }
+});
+
+// Get Tickets by Filters
+router.post('/filter', async (req, res) => {
+    try {
+        const {
+            eventDateLower,
+            eventDateUpper,
+            purchaseDateLower,
+            purchaseDateUpper,
+            timeSlotLower,
+            timeSlotUpper,
+            selectedTicketTypes,
+            selectedTicketStatuses
+        } = req.body;
+
+        let whereClause = `
+            (t.eventDate >= :eventDateLower)
+            AND (t.eventDate <= :eventDateUpper)
+            AND (t.purchaseDate >= :purchaseDateLower)
+            AND (t.purchaseDate <= :purchaseDateUpper)
+            AND (t.timeSlot >= :timeSlotLower)
+            AND (t.timeSlot <= :timeSlotUpper)
+        `;
+
+        if (selectedTicketTypes && selectedTicketTypes.length > 0) {
+            whereClause += ` AND (t.ticketType IN (:selectedTicketTypes))`;
+        }
+        if (selectedTicketStatuses && selectedTicketStatuses.length > 0) {
+            whereClause += ` AND (t.ticketStatus IN (:selectedTicketStatuses))`;
+        }
+
+        const tickets = await sequelize.query(
+            `
+            SELECT * 
+            FROM ticket AS t
+            WHERE ${whereClause}
+            `,
+            {
+                replacements: {
+                    eventDateLower: eventDateLower || '0000-01-01',
+                    eventDateUpper: eventDateUpper || '9999-12-31',
+                    purchaseDateLower: purchaseDateLower || '0000-01-01',
+                    purchaseDateUpper: purchaseDateUpper || '9999-12-31',
+                    timeSlotLower: timeSlotLower || '00:00:00',
+                    timeSlotUpper: timeSlotUpper || '23:59:59',
+                    selectedTicketTypes: selectedTicketTypes.length ? selectedTicketTypes: undefined,
+                    selectedTicketStatuses: selectedTicketStatuses.length ? selectedTicketStatuses : undefined,
+                },
+                type: QueryTypes.SELECT
+            }
+        );
+
+        res.json(tickets);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while fetching the tickets' });
+    }
+});
+
+router.post('/filter/monthly', async (req, res) => {
+    try {
+        const {
+            eventDateLower,
+            eventDateUpper,
+            purchaseDateLower,
+            purchaseDateUpper,
+            timeSlotLower,
+            timeSlotUpper,
+            selectedTicketTypes,
+            selectedTicketStatuses
+        } = req.body;
+
+        let whereClause = `
+            (t.eventDate >= :eventDateLower)
+            AND (t.eventDate <= :eventDateUpper)
+            AND (t.purchaseDate >= :purchaseDateLower)
+            AND (t.purchaseDate <= :purchaseDateUpper)
+            AND (t.timeSlot >= :timeSlotLower)
+            AND (t.timeSlot <= :timeSlotUpper)
+        `;
+
+        if (selectedTicketTypes && selectedTicketTypes.length > 0) {
+            whereClause += ` AND (t.ticketType IN (:selectedTicketTypes))`;
+        }
+        if (selectedTicketStatuses && selectedTicketStatuses.length > 0) {
+            whereClause += ` AND (t.ticketStatus IN (:selectedTicketStatuses))`;
+        }
+
+        const ticketAggregate = await sequelize.query(
+            `
+            SELECT COUNT(t.ticketID) AS ticketCount, SUM(tt.ticketPrice) AS totalAmount, MONTH(t.purchaseDate) AS period
+            FROM ticket AS t JOIN ticket_type AS tt on t.ticketType = tt.ticketTypeCode
+            WHERE ${whereClause}
+            GROUP BY MONTH(t.purchaseDate);
+            `,
+            {
+                replacements: {
+                    eventDateLower: eventDateLower || '0000-01-01',
+                    eventDateUpper: eventDateUpper || '9999-12-31',
+                    purchaseDateLower: purchaseDateLower || '0000-01-01',
+                    purchaseDateUpper: purchaseDateUpper || '9999-12-31',
+                    timeSlotLower: timeSlotLower || '00:00:00',
+                    timeSlotUpper: timeSlotUpper || '23:59:59',
+                    selectedTicketTypes: selectedTicketTypes.length ? selectedTicketTypes: undefined,
+                    selectedTicketStatuses: selectedTicketStatuses.length ? selectedTicketStatuses : undefined,
+                },
+                type: QueryTypes.SELECT
+            }
+        );
+
+        res.json(ticketAggregate);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while fetching monthly aggregates' });
+    }
+});
+
+router.post('/filter/quarterly', async (req, res) => {
+    try {
+        const {
+            eventDateLower,
+            eventDateUpper,
+            purchaseDateLower,
+            purchaseDateUpper,
+            timeSlotLower,
+            timeSlotUpper,
+            selectedTicketTypes,
+            selectedTicketStatuses
+        } = req.body;
+
+        let whereClause = `
+            (t.eventDate >= :eventDateLower)
+            AND (t.eventDate <= :eventDateUpper)
+            AND (t.purchaseDate >= :purchaseDateLower)
+            AND (t.purchaseDate <= :purchaseDateUpper)
+            AND (t.timeSlot >= :timeSlotLower)
+            AND (t.timeSlot <= :timeSlotUpper)
+        `;
+
+        if (selectedTicketTypes && selectedTicketTypes.length > 0) {
+            whereClause += ` AND (t.ticketType IN (:selectedTicketTypes))`;
+        }
+        if (selectedTicketStatuses && selectedTicketStatuses.length > 0) {
+            whereClause += ` AND (t.ticketStatus IN (:selectedTicketStatuses))`;
+        }
+
+        const ticketAggregate = await sequelize.query(
+            `
+            SELECT COUNT(t.ticketID) AS ticketCount, SUM(tt.ticketPrice) AS totalAmount, (MONTH(t.purchaseDate) - 1) DIV 3 + 1 AS period
+            FROM ticket AS t JOIN ticket_type AS tt on t.ticketType = tt.ticketTypeCode
+            WHERE ${whereClause}
+            GROUP BY (MONTH(t.purchaseDate) - 1) DIV 3 + 1;
+            `,
+            {
+                replacements: {
+                    eventDateLower: eventDateLower || '0000-01-01',
+                    eventDateUpper: eventDateUpper || '9999-12-31',
+                    purchaseDateLower: purchaseDateLower || '0000-01-01',
+                    purchaseDateUpper: purchaseDateUpper || '9999-12-31',
+                    timeSlotLower: timeSlotLower || '00:00:00',
+                    timeSlotUpper: timeSlotUpper || '23:59:59',
+                    selectedTicketTypes: selectedTicketTypes.length ? selectedTicketTypes: undefined,
+                    selectedTicketStatuses: selectedTicketStatuses.length ? selectedTicketStatuses : undefined,
+                },
+                type: QueryTypes.SELECT
+            }
+        );
+
+        res.json(ticketAggregate);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while fetching monthly aggregates' });
+    }
+});
+
+router.post('/filter/yearly', async (req, res) => {
+    try {
+        const {
+            eventDateLower,
+            eventDateUpper,
+            purchaseDateLower,
+            purchaseDateUpper,
+            timeSlotLower,
+            timeSlotUpper,
+            selectedTicketTypes,
+            selectedTicketStatuses
+        } = req.body;
+
+        let whereClause = `
+            (t.eventDate >= :eventDateLower)
+            AND (t.eventDate <= :eventDateUpper)
+            AND (t.purchaseDate >= :purchaseDateLower)
+            AND (t.purchaseDate <= :purchaseDateUpper)
+            AND (t.timeSlot >= :timeSlotLower)
+            AND (t.timeSlot <= :timeSlotUpper)
+        `;
+
+        if (selectedTicketTypes && selectedTicketTypes.length > 0) {
+            whereClause += ` AND (t.ticketType IN (:selectedTicketTypes))`;
+        }
+        if (selectedTicketStatuses && selectedTicketStatuses.length > 0) {
+            whereClause += ` AND (t.ticketStatus IN (:selectedTicketStatuses))`;
+        }
+
+        const ticketAggregate = await sequelize.query(
+            `
+            SELECT COUNT(t.ticketID) AS ticketCount, SUM(tt.ticketPrice) AS totalAmount, YEAR(t.purchaseDate) AS period
+            FROM ticket AS t JOIN ticket_type AS tt on t.ticketType = tt.ticketTypeCode
+            WHERE ${whereClause}
+            GROUP BY YEAR(t.purchaseDate);
+            `,
+            {
+                replacements: {
+                    eventDateLower: eventDateLower || '0000-01-01',
+                    eventDateUpper: eventDateUpper || '9999-12-31',
+                    purchaseDateLower: purchaseDateLower || '0000-01-01',
+                    purchaseDateUpper: purchaseDateUpper || '9999-12-31',
+                    timeSlotLower: timeSlotLower || '00:00:00',
+                    timeSlotUpper: timeSlotUpper || '23:59:59',
+                    selectedTicketTypes: selectedTicketTypes.length ? selectedTicketTypes: undefined,
+                    selectedTicketStatuses: selectedTicketStatuses.length ? selectedTicketStatuses : undefined,
+                },
+                type: QueryTypes.SELECT
+            }
+        );
+
+        res.json(ticketAggregate);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while fetching monthly aggregates' });
     }
 });
 
