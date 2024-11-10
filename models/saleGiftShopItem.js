@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'giftShopItemID'  // Key in the referenced model
             }
         },
+        quantity: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         createdAt: {
             type: DataTypes.DATE,
             allowNull: true,

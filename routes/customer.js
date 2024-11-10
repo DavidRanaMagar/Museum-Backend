@@ -23,26 +23,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-//get by ID
-router.get('/:id', async (req, res) => {
-    try {
-        const id = req.params.id;
-        const customer = await Customer.findByPk(id, {
-            include: [{
-                model: Address,
-                as: 'customerAddress',
-            }, {
-                model: Sex,
-                as: 'gender',
-            }]
-        });
-        res.json(customer);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({message: 'An error occurred while fetching an Customer'});
-    }
-});
-
 //get by userID
 router.get('/user/:id', async (req, res) => {
     try {
@@ -62,6 +42,25 @@ router.get('/user/:id', async (req, res) => {
     }
 });
 
+//get by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const customer = await Customer.findByPk(id, {
+            include: [{
+                model: Address,
+                as: 'customerAddress',
+            }, {
+                model: Sex,
+                as: 'gender',
+            }]
+        });
+        res.json(customer);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'An error occurred while fetching an Customer'});
+    }
+});
 
 // insert
 router.post('/', async (req, res) => {
