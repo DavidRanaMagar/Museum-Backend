@@ -51,6 +51,31 @@ router.post('/', async (req, res) => {
     }
 });
 
+//update status
+router.put('/:ticketID/status', async (req, res) => {
+    const { ticketID } = req.params;
+    const { ticketStatus } = req.body;
+
+    try {
+        // Find the ticket by ID
+        const ticket = await Ticket.findByPk(ticketID);
+
+        if (!ticket) {
+            return res.status(404).json({ message: 'Ticket not found' });
+        }
+
+        // Update the ticketStatus
+        ticket.ticketStatus = ticketStatus;
+        ticket.updatedBy = 'online user';
+        await ticket.save();
+
+        res.json({ message: 'Ticket status updated successfully', ticket });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while updating the ticket status' });
+    }
+});
+
 // Delete ticket by ID
 router.delete('/:id', async (req, res) => {
     try {
@@ -76,45 +101,13 @@ router.get('/customer/:customerID', async (req, res) => {
         // Fetch tickets associated with the customerID
         const tickets = await Ticket.findAll({
             where: { customerID },
-            include: [
-                {
-                    model: TicketType,
-                    attributes: ['ticketType', 'ticketPrice'],
-                },
-                {
-                    model: TicketStatus,
-                    attributes: ['ticketStatus'],
-                },
-                {
-                    model: SaleTicket,
-                    include: [
-                        {
-                            model: Sale,
-                            attributes: ['totalPrice', 'createdAt'],
-                        },
-                    ],
-                },
-            ],
         });
 
         if (!tickets || tickets.length === 0) {
             return res.status(404).json({ message: 'No tickets found for this customer' });
         }
 
-        // Format the ticket data to include relevant information (such as status, type, price)
-        const formattedTickets = tickets.map(ticket => ({
-    ticketID: ticket.ticketID,
-    ticketType: ticket.TicketType.ticketType,
-    ticketPrice: ticket.TicketType.ticketPrice,
-    ticketStatus: ticket.TicketStatus.ticketStatus,  // This is your ticket status field
-    purchaseDate: ticket.purchaseDate,
-    eventDate: ticket.eventDate,
-    timeSlot: ticket.timeSlot,
-    transactionAmount: ticket.SaleTickets.length > 0 ? ticket.SaleTickets[0].Sale.totalPrice : 0,
-}));
-
-
-        res.json(formattedTickets);
+        res.json(tickets);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'An error occurred while fetching customer tickets' });
