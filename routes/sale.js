@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {Sale} = require("../models");
+const {Sale, sequelize} = require("../models");
+const {QueryTypes} = require("sequelize");
 
 
 // get all
@@ -54,5 +55,33 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({message: 'An error occurred while fetching Sale'});
     }
 });
+
+// retrieve purchase info and items based on customerID
+router.get('/:id/items', async (req, res) => {
+    const customerID = req.params.id;
+
+    try {
+        const artifacts = await sequelize.query(
+            `
+            SELECT gsi.title AS title, gsi.price AS price, sgsi.quantity AS quantity, st.transactionDate AS transactionDate
+            FROM gift_shop_item gsi
+                JOIN sale_gift_shop_item sgsi ON gsi.giftShopItemID = sgsi.giftShopItemID
+                JOIN sale ON sgsi.saleID = sale.saleID
+                JOIN sale_transaction st ON sale.saleID = st.saleID
+            WHERE st.customerID = :customerID;
+            `,
+            {
+                replacements: { customerID },
+                type: QueryTypes.SELECT
+            }
+        );
+
+        res.json(artifacts);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'An error occurred while fetching Exhibition'});
+    }
+});
+
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {Exhibition} = require("../models");
+const {Exhibition, sequelize} = require("../models");
+const {QueryTypes} = require("sequelize");
 
 
 // get all
@@ -54,5 +55,31 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({message: 'An error occurred while fetching Exhibition'});
     }
 });
+
+router.get('/:id/artifacts', async (req, res) => {
+    const exhibitionID = req.params.id;
+
+    try {
+        const artifacts = await sequelize.query(
+            `
+            SELECT a.creator AS creator, a.title AS title
+            FROM artifact a
+                JOIN artifact_exhibition ae ON a.artifactID = ae.artifactID
+                JOIN exhibition e ON ae.exhibitionID = e.exhibitionID
+            WHERE e.exhibitionID = :exhibitionID;
+            `,
+            {
+                replacements: { exhibitionID },
+                type: QueryTypes.SELECT
+            }
+        );
+
+        res.json(artifacts);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'An error occurred while fetching Exhibition'});
+    }
+});
+
 
 module.exports = router;

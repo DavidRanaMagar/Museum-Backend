@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {Loan} = require("../models");
+const {Loan, sequelize} = require("../models");
+const {QueryTypes} = require("sequelize");
 
 
 // get all
@@ -52,6 +53,31 @@ router.delete('/:id', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({message: 'An error occurred while fetching Loan'});
+    }
+});
+
+router.get('/:id/artifacts', async (req, res) => {
+    const loanID = req.params.id;
+
+    try {
+        const artifacts = await sequelize.query(
+            `
+            SELECT a.creator AS creator, a.title AS title
+            FROM artifact a
+                JOIN artifact_loan al ON a.artifactID = al.artifactID
+                JOIN loan l ON al.loanID = l.loanID
+            WHERE l.loanID = :loanID;
+            `,
+            {
+                replacements: { loanID: loanID },
+                type: QueryTypes.SELECT
+            }
+        );
+
+        res.json(artifacts);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'An error occurred while fetching Exhibition'});
     }
 });
 
