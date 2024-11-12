@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {  Artifact, sequelize } = require('../models'); // Adjust the path to your models
+const {  Artifact, Location, sequelize} = require('../models'); // Adjust the path to your models
 const { QueryTypes } = require('sequelize');  // Import Op for query operators
 
 
@@ -19,7 +19,12 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const artifact = await Artifact.findByPk(id);
+        const artifact = await Artifact.findByPk(id, {
+            include: [{
+                model: Location,
+                as: 'location',
+            }]
+        });
         res.json(artifact);
     } catch (err) {
         console.error(err);
@@ -65,9 +70,54 @@ router.post('/available', async (req, res) => {
 
 // insert
 router.post('/', async (req, res) => {
+
+    const {
+        title,
+        creator,
+        description,
+        dateCreated,
+        imageURL,
+        acquiredDate,
+        artifactStatusID,
+        dimension,
+        material,
+        owner,
+        location
+    } = req.body;
+
+    const {
+        building,
+        floor,
+        section,
+    } = location;
     try {
-        const artifact = await Artifact.create(req.body);
-        res.json(artifact);
+        const [storedLocation] = await Location.findOrCreate({  // Use findOrCreate to check if the address exists or create a new one
+            where: {
+                building,
+                floor,
+                section,
+            },
+            defaults: { building, floor, section }
+        });
+        console.log('storedLocation123');
+        console.log(storedLocation);
+        const artifact = await Artifact.create({
+            title,
+            creator,
+            description,
+            dateCreated,
+            imageURL,
+            acquiredDate,
+            artifactStatusID,
+            dimension,
+            material,
+            owner,
+            updatedBy: 'admin',
+            createdBy: 'admin',
+            storedLocationID: storedLocation.locationID,
+
+        });
+        res.status(201).json(artifact);
     } catch (err) {
         console.error(err);
         res.status(500).json({message: 'An error occurred while creating an artifact'});
@@ -96,5 +146,94 @@ router.delete('/:id', async (req, res) => {
 function isValidDate(date) {
     return !isNaN(Date.parse(date));
 }
+
+// update
+router.put('/:id', async (req, res) => {
+    const {
+        title,
+        creator,
+        description,
+        dateCreated,
+        imageURL,
+        acquiredDate,
+        artifactStatusID,
+        dimension,
+        material,
+        owner,
+        location
+    } = req.body;
+
+    const {
+        building,
+        floor,
+        section,
+    } = location;
+
+    try {
+        // Check if artifact exists
+        const artifact = await Artifact.findByPk(req.params.id);
+        if (!artifact) {
+            return res.status(404).json({ message: 'Artifact not found' });
+        }
+
+        // Check if location already exists
+        let storedLocation = await Location.findOne({
+            where: {
+                building,
+                floor,
+                section
+            }
+        });
+
+        // If location doesn't exist, create it
+        if (!storedLocation) {
+            storedLocation = await Location.create({
+                building,
+                floor,
+                section
+            });
+        }
+
+        // Update customer with the found or created addressID
+        await artifact.update({
+            title,
+            creator,
+            description,
+            dateCreated,
+            imageURL,
+            acquiredDate,
+            artifactStatusID,
+            dimension,
+            material,
+            owner,
+            storedLocationID: storedLocation.locationID // Use the found/created location ID
+        });
+
+        res.status(200).json(artifact);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while updating the customer' });
+    }
+});
+
+
+//delete with id
+router.delete('/:id', async (req, res) => {
+    try {
+        const id = req.params.id; // Get the id from the route parameters
+        const customer = await Customer.findByPk(id);
+        if (!customer) {
+            return res.status(404).json({message: 'Customer not found'});
+        }
+        await customer.destroy();
+        // Send success response
+        res.json({message: `Customer with id ${id} deleted successfully.`});
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'An error occurred while fetching Customer'});
+    }
+});
+
 
 module.exports = router;
