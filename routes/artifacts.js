@@ -99,8 +99,6 @@ router.post('/', async (req, res) => {
             },
             defaults: { building, floor, section }
         });
-        console.log('storedLocation123');
-        console.log(storedLocation);
         const artifact = await Artifact.create({
             title,
             creator,
@@ -194,7 +192,7 @@ router.put('/:id', async (req, res) => {
             });
         }
 
-        // Update customer with the found or created addressID
+        // Update artifact with the found or created addressID
         await artifact.update({
             title,
             creator,
@@ -212,28 +210,7 @@ router.put('/:id', async (req, res) => {
         res.status(200).json(artifact);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'An error occurred while updating the customer' });
+        res.status(500).json({ message: 'An error occurred while updating the artifact' });
     }
 });
 
-
-//delete with id
-router.delete('/:id', async (req, res) => {
-    try {
-        const id = req.params.id; // Get the id from the route parameters
-        const customer = await Customer.findByPk(id);
-        if (!customer) {
-            return res.status(404).json({message: 'Customer not found'});
-        }
-        await customer.destroy();
-        // Send success response
-        res.json({message: `Customer with id ${id} deleted successfully.`});
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({message: 'An error occurred while fetching Customer'});
-    }
-});
-
-
-module.exports = router;

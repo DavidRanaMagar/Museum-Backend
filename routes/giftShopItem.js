@@ -38,6 +38,59 @@ router.post('/', async (req, res) => {
     }
 });
 
+// update
+router.put('/:id', async (req, res) => {
+    const id = req.params.id; // Get the id from the route parameters
+    const {
+        title,
+        description,
+        designer,
+        origin,
+        material,
+        dimension,
+        price,
+        dealPrice,
+        costPrice,
+        imageUrl,
+        stock,
+        totalNumberSold,
+        categoryID
+    } = req.body;
+
+    try {
+        // Check if the item exists
+        const giftShopItem = await GiftShopItem.findByPk(id);
+        if (!giftShopItem) {
+            return res.status(404).json({ message: 'GiftShopItem not found' });
+        }
+
+        // Update the item with the new data
+        await giftShopItem.update({
+            title,
+            description,
+            designer,
+            origin,
+            material,
+            dimension,
+            price,
+            dealPrice,
+            costPrice,
+            imageUrl,
+            stock,
+            totalNumberSold,
+            categoryID
+        });
+
+        res.json({
+            message: 'GiftShopItem updated successfully',
+            data: giftShopItem
+        });
+    } catch (err) {
+        console.error('Error updating GiftShopItem:', err);
+        res.status(500).json({ message: 'An error occurred while updating the GiftShopItem' });
+    }
+});
+
 //delete with id
 router.delete('/:id', async (req, res) => {
     try {
