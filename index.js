@@ -1,13 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const cron = require('node-cron');
-const nodemailer = require('nodemailer'); 
-const mysql = require('mysql2'); 
 const app = express();
 const db = require('./models');
 
 require('dotenv').config();
-
 
 app.use(express.json());
 app.use(cors());

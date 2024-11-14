@@ -9,9 +9,6 @@ router.get('/', async (req, res) => {
     try {
         const customer = await Customer.findAll({
             include: [{
-                model: Address,
-                as: 'customerAddress',
-            }, {
                 model: Sex,
                 as: 'gender',
             }]
@@ -48,9 +45,6 @@ router.get('/:id', async (req, res) => {
         const id = req.params.id;
         const customer = await Customer.findByPk(id, {
             include: [{
-                model: Address,
-                as: 'customerAddress',
-            }, {
                 model: Sex,
                 as: 'gender',
             }]
@@ -71,20 +65,8 @@ router.post('/', async (req, res) => {
         phone,
         dob,
         sex,
-        creditCardNumber,
-        expiryDate,
-        cvv,
-        customerAddress,
         user
     } = req.body;
-
-    const {
-        streetAddress,
-        city,
-        state,
-        postalCode,
-        country
-    } = customerAddress;
 
     const {
         username,
@@ -95,18 +77,6 @@ router.post('/', async (req, res) => {
     } = user;
 
     try {
-
-        const [address] = await Address.findOrCreate({  // Use findOrCreate to check if the address exists or create a new one
-            where: {
-                streetAddress,
-                city,
-                state,
-                postalCode,
-                country
-            },
-            defaults: { streetAddress, city, state, postalCode, country }
-        });
-
         const newUser = await User.create({
             username,
             password,
@@ -122,12 +92,8 @@ router.post('/', async (req, res) => {
             phone,
             dob,
             sex,  // This will use the foreign key for 'Sex'
-            creditCardNumber,
-            expiryDate,
-            cvv,
             updatedBy: newUser.updatedBy,
             createdBy: newUser.createdBy,
-            addressID: address.addressID,  // Use the addressID from the created/found address
             userID: newUser.userID  // Use the userID from the created user
         });
 
@@ -146,33 +112,9 @@ router.post('/naUser', async (req, res) => {
         phone,
         dob,
         sex,
-        creditCardNumber,
-        expiryDate,
-        cvv,
-        customerAddress,
-        user
     } = req.body;
 
-    const {
-        streetAddress,
-        city,
-        state,
-        postalCode,
-        country
-    } = customerAddress;
-
     try {
-
-        const [address] = await Address.findOrCreate({  // Use findOrCreate to check if the address exists or create a new one
-            where: {
-                streetAddress,
-                city,
-                state,
-                postalCode,
-                country
-            },
-            defaults: { streetAddress, city, state, postalCode, country }
-        });
 
         const customer = await Customer.create({
             firstName,
@@ -181,12 +123,8 @@ router.post('/naUser', async (req, res) => {
             phone,
             dob,
             sex,  // This will use the foreign key for 'Sex'
-            creditCardNumber,
-            expiryDate,
-            cvv,
             updatedBy: 'admin',
             createdBy: 'admin',
-            addressID: address.addressID,  // Use the addressID from the created/found address
         });
 
         res.status(201).json(customer);
@@ -205,47 +143,13 @@ router.put('/:id', async (req, res) => {
         phone,
         dob,
         sex,
-        creditCardNumber,
-        expiryDate,
-        cvv,
-        customerAddress
     } = req.body;
-
-    const {
-        streetAddress,
-        city,
-        state,
-        postalCode,
-        country
-    } = customerAddress;
 
     try {
         // Check if customer exists
         const customer = await Customer.findByPk(req.params.id);
         if (!customer) {
             return res.status(404).json({ message: 'Customer not found' });
-        }
-
-        // Check if address already exists
-        let address = await Address.findOne({
-            where: {
-                streetAddress,
-                city,
-                state,
-                postalCode,
-                country
-            }
-        });
-
-        // If address doesn't exist, create it
-        if (!address) {
-            address = await Address.create({
-                streetAddress,
-                city,
-                state,
-                postalCode,
-                country
-            });
         }
 
         // Update customer with the found or created addressID
@@ -256,10 +160,6 @@ router.put('/:id', async (req, res) => {
             phone,
             dob,
             sex,
-            creditCardNumber,
-            expiryDate,
-            cvv,
-            address: address.addressID // Use the found/created address ID
         });
 
         res.status(200).json(customer);

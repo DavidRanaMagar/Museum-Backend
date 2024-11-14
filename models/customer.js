@@ -35,18 +35,6 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'sexCode' // Key in the referenced model
             }
         },
-        creditCardNumber: {
-            type: DataTypes.STRING(16),
-            allowNull: false
-        },
-        expiryDate: {
-            type: DataTypes.DATEONLY,
-            allowNull: false
-        },
-        cvv: {
-            type: DataTypes.STRING(3), // Typically 3 digits
-            allowNull: false
-        },
         userID: {
             type: DataTypes.INTEGER,
             allowNull: true,
@@ -73,14 +61,6 @@ module.exports = (sequelize, DataTypes) => {
         updatedBy: {
             type: DataTypes.STRING(25),
             allowNull: true
-        },
-        addressID: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            references: {
-                model: 'Address', // Name of the referenced model
-                key: 'addressID' // Key in the referenced model
-            }
         }
     }, {
         tableName: 'customer',
@@ -92,10 +72,6 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.Sex, {
             foreignKey: 'sex',
             as: 'gender'
-        });
-        Customer.belongsTo(models.Address, {
-            foreignKey: 'addressID',
-            as: 'customerAddress'
         });
         Customer.belongsTo(models.User, {
             foreignKey: 'userID',
