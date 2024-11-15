@@ -1,12 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { Ticket, SaleTicket, Sale, TicketStatus, TicketType, sequelize} = require('../models');
+const { Ticket, Exhibition, sequelize} = require('../models');
 const {QueryTypes} = require("sequelize");
 
 // Get all tickets
 router.get('/', async (req, res) => {
     try {
-        const tickets = await Ticket.findAll();
+        const tickets = await Ticket.findAll({
+            include: [{
+                model: Exhibition,
+                as: 'exhibition',
+            }]
+        });
         res.json(tickets);
     } catch (err) {
         console.error(err);
@@ -31,16 +36,17 @@ router.get('/:id', async (req, res) => {
 
 // Insert a new ticket
 router.post('/', async (req, res) => {
-    const { ticketType, purchaseDate, eventDate, timeSlot, ticketStatus, customerID } = req.body;
+    const { ticketType, purchaseDate, eventDate, ticketStatus, timeSlot, customerID, exhibitionID } = req.body;
 
     try {
         const ticket = await Ticket.create({
             ticketType,
             purchaseDate,
             eventDate,
-            timeSlot,
             ticketStatus,
+            timeSlot,
             customerID,
+            exhibitionID,
             updatedBy: 'online user',
             createdBy: 'online user',
         });
@@ -101,6 +107,10 @@ router.get('/customer/:customerID', async (req, res) => {
         // Fetch tickets associated with the customerID
         const tickets = await Ticket.findAll({
             where: { customerID },
+            include: [{
+                model: Exhibition,
+                as: 'exhibition',
+            }]
         });
 
         if (!tickets || tickets.length === 0) {

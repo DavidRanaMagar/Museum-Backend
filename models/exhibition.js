@@ -21,10 +21,6 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.DATE,
             allowNull: false,
         },
-        timeSlot: {
-            type: DataTypes.TIME,
-            allowNull: true
-        },
         locationID: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -59,6 +55,8 @@ module.exports = function (sequelize, DataTypes) {
 
     Exhibition.associate = function (models) {
         Exhibition.belongsTo(models.Location, {foreignKey: 'locationID'});
+        Exhibition.hasMany(models.Ticket, {foreignKey: 'exhibitionID'});
     };
+
     return Exhibition;
 };

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {Exhibition, sequelize} = require("../models");
-const {QueryTypes} = require("sequelize");
+const {QueryTypes, Op} = require("sequelize");
 
 
 // get all
@@ -30,6 +30,7 @@ router.get('/:id', async (req, res) => {
 // insert
 router.post('/', async (req, res) => {
     try {
+        console.log(req.body);
         const exhibition = await Exhibition.create(req.body);
         res.json(exhibition);
     } catch (err) {
@@ -81,5 +82,27 @@ router.get('/:id/artifacts', async (req, res) => {
     }
 });
 
+//get by date
+router.post('/date', async (req, res) => {
+    const { date } = req.body; // Expecting `date` in the format 'YYYY-MM-DD'
+
+    if (!date) {
+        return res.status(400).json({ message: 'Date is required in the request body.' });
+    }
+
+    try {
+        const exhibitions = await Exhibition.findAll({
+            where: {
+                startDate: { [Op.lte]: date },
+                endDate: { [Op.gte]: date }
+            }
+        });
+
+        res.json(exhibitions);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while retrieving exhibitions.' });
+    }
+});
 
 module.exports = router;

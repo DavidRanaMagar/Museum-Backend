@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        exhibitionID: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
         createdAt: {
             type: DataTypes.DATE,
             allowNull: false,
@@ -69,6 +73,10 @@ module.exports = (sequelize, DataTypes) => {
         Ticket.belongsTo(models.Customer, {
             foreignKey: 'customerID',
             as: 'customer'
+        });
+        Ticket.belongsTo(models.Exhibition, {
+            foreignKey: 'exhibitionID',
+            as: 'exhibition'
         });
     };
 
