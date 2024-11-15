@@ -76,6 +76,10 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.User, {
             foreignKey: 'userID',
         });
+        Customer.hasMany(models.MembershipExpiryNotification, {
+            foreignKey: 'customerID',
+            as: 'notifications'
+        });
     };
 
     return Customer;

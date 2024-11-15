@@ -45,6 +45,9 @@ app.use("/userRole", require("./routes/userRole"));
 app.use("/saleTicket", require("./routes/saleTicket"));
 app.use("/saleTransaction", require("./routes/saleTransaction"));
 app.use("/saleGiftShopItem", require("./routes/saleGiftShopItem"));
+app.use("/membershipExpiryNotification", require("./routes/membershipExpiryNotification"));
+
+
 
 
 db.sequelize.sync().then(() => {
