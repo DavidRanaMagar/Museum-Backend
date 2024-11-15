@@ -3,15 +3,11 @@ const cors = require('cors');
 const app = express();
 const db = require('./models');
 
-require('dotenv').config();
+
 
 app.use(express.json());
 app.use(cors());
 
-// Import the triggers
-require('./triggers/creditCardExpiryTrigger');
-require('./triggers/membershipExpiryTrigger');
-require('./triggers/upcomingEventsTrigger');
 
 //url encoded 
 // app.use(express.urlencoded({ extended: true }));
@@ -49,6 +45,9 @@ app.use("/userRole", require("./routes/userRole"));
 app.use("/saleTicket", require("./routes/saleTicket"));
 app.use("/saleTransaction", require("./routes/saleTransaction"));
 app.use("/saleGiftShopItem", require("./routes/saleGiftShopItem"));
+app.use("/membershipExpiryNotification", require("./routes/membershipExpiryNotification"));
+
+
 
 
 db.sequelize.sync().then(() => {
