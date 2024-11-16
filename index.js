@@ -4,7 +4,6 @@ const app = express();
 const db = require('./models');
 
 
-
 app.use(express.json());
 app.use(cors());
 

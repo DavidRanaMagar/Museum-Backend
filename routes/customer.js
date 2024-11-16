@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {Customer, Sex, Address, User} = require("../models");
-const {NUMBER} = require("sequelize");
+const {Customer, Sex, User, sequelize} = require("../models");
+const {QueryTypes} = require("sequelize");
 
 
 // get all
@@ -185,6 +185,63 @@ router.delete('/:id', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({message: 'An error occurred while fetching Customer'});
+    }
+});
+
+//visitors report
+router.post('/report', async (req, res) => {
+    const {
+        sex,
+        ageUpper,
+        ageLower,
+        dateUpper,
+        dateLower,
+        selectedTicketTypes
+    } = req.body;
+
+    let whereClause = `
+            (t.ticketStatus = 2)
+            AND (t.eventDate >= :dateLower)
+            AND (t.eventDate <= :dateUpper)
+            AND (TIMESTAMPDIFF(YEAR, c.dob, CURDATE()) >= :ageLower)
+            AND (TIMESTAMPDIFF(YEAR, c.dob, CURDATE()) <= :ageUpper)
+        `;
+
+    if (selectedTicketTypes && selectedTicketTypes.length > 0) {
+        whereClause += ` AND (t.ticketType IN (:selectedTicketTypes))`;
+    }
+    if (sex) {
+        whereClause += ` AND c.sex = :sex`;
+    }
+
+    try {
+        const visitors = await sequelize.query(
+            `
+            SELECT c.lastName, c.customerID, s.sex, TIMESTAMPDIFF(YEAR, c.dob, CURDATE()) AS age, tt.ticketType, e.title, t.eventDate AS visitDate
+            FROM customer AS c
+                JOIN sex AS s ON s.sexCode = c.sex
+                JOIN ticket AS t ON t.customerID = c.customerID
+                JOIN ticket_type as tt ON tt.ticketTypeCode = t.ticketType
+                JOIN exhibition AS e ON e.exhibitionID = t.exhibitionID
+            WHERE ${whereClause}
+            ORDER BY c.customerID
+            `,
+            {
+                replacements: {
+                    ageUpper: ageUpper || '999',
+                    ageLower: ageLower || '0',
+                    dateLower: dateLower || '0000-01-01',
+                    dateUpper: dateUpper || '9999-12-31',
+                    sex: sex || undefined,
+                    selectedTicketTypes: selectedTicketTypes.length ? selectedTicketTypes: undefined,
+                },
+                type: QueryTypes.SELECT
+            }
+        );
+        res.json(visitors);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'An error occurred while fetching visitor report'});
     }
 });
 
