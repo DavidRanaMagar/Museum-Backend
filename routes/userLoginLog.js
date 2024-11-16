@@ -1,12 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const { UserLoginLog } = require('../models');
+const {Sequelize} = require("sequelize");
 
 // Create a new log entry
 router.post('/', async (req, res) => {
     try {
         const { userID } = req.body;
-        const newLog = await UserLoginLog.create({ userID });
+        const currentTime = new Date();  // Get current date and time
+        const newLog = await UserLoginLog.create({
+            userID,
+            loginTime: currentTime
+        });
         res.status(201).json(newLog);
     } catch (error) {
         console.error(error);
