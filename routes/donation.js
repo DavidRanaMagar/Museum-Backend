@@ -35,7 +35,7 @@ router.post('/dateRange', async (req, res) => {
             //finds donations within a date range
             `
             SELECT * 
-            FROM Donation AS d
+            FROM Donation AS d 
             WHERE d.donationDate <= :endDate AND d.donationDate >= :startDate
             `,
             {

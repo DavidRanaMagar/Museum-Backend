@@ -48,9 +48,12 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'role',
             as: 'userRole'
         });
-
         User.hasOne(models.Customer, {
             foreignKey: 'customerID'
+        });
+        User.hasMany(models.UserLoginLog, {
+            foreignKey: 'userID',
+            sourceKey: 'userID',
         });
     };
 

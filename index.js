@@ -45,7 +45,7 @@ app.use("/saleTicket", require("./routes/saleTicket"));
 app.use("/saleTransaction", require("./routes/saleTransaction"));
 app.use("/saleGiftShopItem", require("./routes/saleGiftShopItem"));
 app.use("/membershipExpiryNotification", require("./routes/membershipExpiryNotification"));
-
+app.use("/userLoginLog", require("./routes/userLoginLog"));
 
 
 
