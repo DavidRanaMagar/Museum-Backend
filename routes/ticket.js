@@ -20,11 +20,30 @@ router.get('/', async (req, res) => {
 });
 
 // Get ticket according to customer firstName, lastName, email, phone, username, ticketID
-router.get('/search-tickets', async (req, res) => {
+router.get('/search', async (req, res) => {
     try {
-        const { firstName, lastName, email, phone } = req.query;  // Search query from the request
-        const ticketID = req.query.ticketID || null;
+        const { firstName, lastName, email, phone, ticketID } = req.query;  // Search query from the request
 
+        // Initialize an array to hold conditions
+        const conditions = [];
+
+        // Add conditions only if the query parameters are not empty
+        if (firstName) {
+            conditions.push({ '$customer.firstName$': { [Sequelize.Op.like]: `%${firstName}%` } });
+        }
+        if (lastName) {
+            conditions.push({ '$customer.lastName$': { [Sequelize.Op.like]: `%${lastName}%` } });
+        }
+        if (email) {
+            conditions.push({ '$customer.email$': { [Sequelize.Op.like]: `%${email}%` } });
+        }
+        if (phone) {
+            conditions.push({ '$customer.phone$': { [Sequelize.Op.like]: `%${phone}%` } });
+        }
+        if (ticketID) {
+            conditions.push({ ticketID: ticketID });
+        }
+        // Query the database with dynamically built conditions
         const tickets = await Ticket.findAll({
             include: [{
                 model: Customer,
@@ -32,13 +51,7 @@ router.get('/search-tickets', async (req, res) => {
                 attributes: ['firstName', 'lastName', 'email', 'phone']  // Include customer details
             }],
             where: {
-                [Sequelize.Op.and]: [
-                    { '$customer.firstName$': { [Sequelize.Op.like]: `%${firstName}%` } },
-                    { '$customer.lastName$': { [Sequelize.Op.like]: `%${lastName}%` } },
-                    { '$customer.email$': { [Sequelize.Op.like]: `%${email}%` } },
-                    { '$customer.phone$': { [Sequelize.Op.like]: `%${phone}%` } },
-                    { ticketID: ticketID }  // Optionally search by ticketID
-                ]
+                [Sequelize.Op.and]: conditions  // Use the conditions array
             }
         });
 
