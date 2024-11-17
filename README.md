@@ -6,34 +6,44 @@ shop revenue. Consider all aspects of what it takes to run a Museum and the
 data you need to collect, to be able to produce reports regarding the
 successful functioning of the museum.
 
-This program acts as the backend service provider for our front end application. We have created endpoints according to 
-the requirement of our application. This program is connect to MYSQL server which is hosted in AZURE SERVER. And the 
+This program acts as the backend service provider for our front end application. We have created endpoints according to
+the requirement of our application. This program is connect to MYSQL server which is hosted in AZURE SERVER. And the
 front is creating using React framework.
 
-
-**Features**
+## Features
 
 RESTful API implementation.
 
 Handles HTTP requests (GET, POST, PUT, DELETE).
 
-Authentication 
+Authentication
+
+## Getting started
+
+### 1. Install Node.js
+   Download [Node.js](https://nodejs.org/en/download/package-manager)
+
+### 2. Clone the project
+   ```bash 
+   git clone https://github.com/DavidRanaMagar/Museum-Backend.git
+   ```
+### 3. Get in the project file and install all the dependencies
+   ```bash 
+   cd Museum-Backend
+   ```
+#### `npm install`
 
 
-**Getting startd**
-1. Install Node.js
-2. clone the project
+### 4. Usage
+#### `node index.js`
 
-    git clone https://github.com/DavidRanaMagar/Museum-Backend.git
+Open [http://localhost:3001](http://localhost:3001) to view it in your browser
 
-3. Get in the project file and install all the dependencies
+example to get customer data in json:
 
-    cd Museum-Backend
+Open [http://localhost:3001/customers](http://localhost:3000/customers) to view it in your browser
 
-     node index.js
-4. Usage
-    localhost:3001
-
-There are various of endpoint that we can access through given URL for CURL operation, for more information look into routes package.
+There are various of endpoint that we can access through given URL for CURL operation, for more information look into
+routes package.
 
 
