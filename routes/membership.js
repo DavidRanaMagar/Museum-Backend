@@ -55,4 +55,33 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+//renew membership update
+router.put('/:membershipID/renew', async (req, res) => {
+    const { membershipID } = req.params;
+    const { endDate, renewDate } = req.body;
+
+    try {
+        const membership = await Membership.findByPk(membershipID);
+
+        if (!membership) {
+            return res.status(404).json({ message: 'Membership not found' });
+        }
+
+        if (endDate) {
+            membership.endDate = new Date(endDate); // Ensure proper date format
+        }
+
+        if (renewDate) {
+            membership.renewDate = new Date(renewDate); // Ensure proper date format
+        }
+
+        await membership.save();
+
+        res.json({ message: 'Membership updated successfully', membership });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while updating the membership' });
+    }
+});
+
 module.exports = router;
