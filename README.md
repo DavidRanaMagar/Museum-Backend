@@ -41,7 +41,7 @@ Open [http://localhost:3001](http://localhost:3001) to view it in your browser
 
 example to get customer data in json:
 
-Open [http://localhost:3001/customers](http://localhost:3000/customers) to view it in your browser
+Open [http://localhost:3001/customers](http://localhost:3001/customers) to view it in your browser
 
 There are various of endpoint that we can access through given URL for CURL operation, for more information look into
 routes package.
