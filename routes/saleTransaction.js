@@ -28,10 +28,17 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const saleTransaction = await SaleTransaction.create(req.body);
-        res.json(saleTransaction);
+        const queriedTransaction = await SaleTransaction.findByPk(saleTransaction.transactionID);
+
+        const discountApplied = queriedTransaction.transactionAmount !== req.body.transactionAmount;
+
+        res.json({
+            transaction: saleTransaction,
+            discountApplied
+        });
     } catch (err) {
         console.error(err);
-        res.status(500).json({message: 'An error occurred while creating an saleTransaction'});
+        res.status(500).json({ message: 'An error occurred while creating a saleTransaction' });
     }
 });
 
