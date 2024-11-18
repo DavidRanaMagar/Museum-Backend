@@ -97,7 +97,7 @@ router.put('/:membershipID/renew', async (req, res) => {
         }
 
         if (renewDate) {
-            membership.renewDate = new Date(renewDate); // Ensure proper date format
+            membership.renewalDate = new Date(renewDate); // Ensure proper date format
         }
 
         await membership.save();
