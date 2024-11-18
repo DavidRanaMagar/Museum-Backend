@@ -47,3 +47,7 @@ There are various of endpoint that we can access through given URL for CURL oper
 routes package.
 
 
+### To Access Hosted Application(Backend Server): [http://3.94.130.218:3001](http://3.94.130.218:3001)
+
+
+

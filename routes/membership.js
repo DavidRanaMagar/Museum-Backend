@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {Membership} = require("../models");
+const { Op } = require('sequelize');
 
 
 // get all
@@ -11,6 +12,30 @@ router.get('/', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({message: 'An error occurred while fetching Membership'});
+    }
+});
+
+//get by userID
+router.get('/customer/:userID', async (req, res) => {
+    try {
+        const customerID = req.params.userID;
+        const membership = await Membership.findAll({
+            where: {
+                customerID,
+                endDate: {
+                    [Op.gt]: new Date(), // Check if endDate is greater than today
+                },
+            },
+        });
+
+        if (membership.length > 0) {
+            res.json(membership);
+        } else {
+            res.status(404).json({ message: 'No valid memberships found for the given userID' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred while fetching the Membership' });
     }
 });
 
